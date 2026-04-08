@@ -1,0 +1,3 @@
+ARG FROM_ROCKYLINUX
+FROM rockylinux/rockylinux:${FROM_ROCKYLINUX}
+RUN --mount=type=bind,source=./rpms/,target=/rpms/ dnf install --assumeyes /rpms/*.rpm && dnf clean all

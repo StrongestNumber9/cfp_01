@@ -1,0 +1,3 @@
+ARG FROM_ROCKYLINUX
+FROM ghcr.io/teragrep/ipa_01/client/${FROM_ROCKYLINUX}:1.0.0
+RUN --mount=type=bind,source=./rpms/,target=/rpms/ dnf install --assumeyes /rpms/*.rpm && dnf clean all

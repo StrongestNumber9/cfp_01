@@ -1,0 +1,28 @@
+name: CI
+
+on: [ push ]
+
+env:
+  cfengine_version: 3.21.3-1
+
+jobs:
+  upload:
+    name: CI
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        from_rockylinux: [ "8", "9" ]
+        container_type: [ "plain", "ipa" ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download CFEngine
+        run: |
+          mkdir -p "rpm/";
+          wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/pub/yum/x86_64/cfengine-community-${cfengine_version}.el${{ matrix.from_rockylinux }}.x86_64.rpm" --output-document "rpm/cfengine.rpm"
+
+      - name: Build container
+        run: docker build . --build-arg FROM_ROCKYLINUX "${{ matrix.from_rockylinux }}" -f "Dockerfile.${{ matrix.container_type }}"
