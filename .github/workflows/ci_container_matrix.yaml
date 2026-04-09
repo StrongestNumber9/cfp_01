@@ -1,0 +1,56 @@
+name: CI
+
+on: [ push ]
+
+env:
+  CFENGINE_VERSION: 3.21.3
+
+jobs:
+  upload:
+    name: CI
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        from_rockylinux: [ 8, 9 ]
+        container_type: [ plain, ipa ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Cache CFEngine binary
+        id: cache-binary
+        uses: actions/cache@v5
+        with:
+          path: rpm/cfengine.rpm
+          key: ${{ matrix.from_rockylinux }}-binary
+
+      - name: Download CFEngine
+        if: steps.cache-binary.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "rpm/";
+          wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/community_binaries/Community-${CFENGINE_VERSION}/agent_rhel${{ matrix.from_rockylinux }}_x86_64/cfengine-community-${CFENGINE_VERSION}-1.el${{ matrix.from_rockylinux }}.x86_64.rpm" --output-document "rpm/cfengine.rpm";
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+        with:
+          driver: docker
+
+      - name: Build containers
+        uses: docker/build-push-action@v7
+        with:
+          push: false
+          context: .
+          file: "Dockerfile.${{ matrix.container_type }}"
+          build-args: |
+            FROM_ROCKYLINUX=${{ matrix.from_rockylinux }}
+          tags: ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}:latest
+
+      - name: Check CFEngine binary reports expected version
+        run: |
+          REPORTED_VERSION="$(docker run --rm --name "ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}" --entrypoint /var/cfengine/bin/cf-agent "ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}:latest" --version)";
+          echo "Detected version '${REPORTED_VERSION}'";
+          if [ "${REPORTED_VERSION}" != "CFEngine Core ${CFENGINE_VERSION}" ]; then
+            echo "Detected version is not as expected, failing";
+            exit 1;
+          fi;

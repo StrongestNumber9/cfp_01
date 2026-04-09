@@ -1,0 +1,66 @@
+name: Build and upload GHCR containers
+
+on:
+  release:
+    types: [published]
+
+env:
+  CFENGINE_VERSION: 3.21.3
+
+jobs:
+  upload_container:
+    name: Upload Containers
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    strategy:
+      matrix:
+        from_rockylinux: [ 8, 9 ]
+        container_type: [ plain, ipa ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Cache CFEngine binary
+        id: cache-binary
+        uses: actions/cache@v5
+        with:
+          path: rpm/cfengine.rpm
+          key: ${{ matrix.from_rockylinux }}-binary
+
+      - name: Download CFEngine
+        if: steps.cache-binary.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "rpm/";
+          wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/community_binaries/Community-${CFENGINE_VERSION}/agent_rhel${{ matrix.from_rockylinux }}_x86_64/cfengine-community-${CFENGINE_VERSION}-1.el${{ matrix.from_rockylinux }}.x86_64.rpm" --output-document "rpm/cfengine.rpm";
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+        with:
+          driver: docker
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lowercase repository name
+        run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Build containers
+        uses: docker/build-push-action@v7
+        with:
+          push: true
+          context: .
+          file: "Dockerfile.${{ matrix.container_type }}"
+          build-args: |
+            FROM_ROCKYLINUX=${{ matrix.from_rockylinux }}
+          tags: |
+            ghcr.io/${{ env.REPO_LC }}/${{ matrix.container_type}}/el${{ matrix.from_rockylinux }}:${{ github.event.release.tag_name }}
+            ghcr.io/${{ env.REPO_LC }}/${{ matrix.container_type}}/el${{ matrix.from_rockylinux }}:latest

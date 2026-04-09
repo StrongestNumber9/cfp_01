@@ -1,0 +1,3 @@
+ARG FROM_ROCKYLINUX
+FROM ghcr.io/teragrep/ipa_01/client/el${FROM_ROCKYLINUX}:1.0.0
+RUN --mount=type=bind,source=./rpm/,target=/rpm/ dnf install --assumeyes /rpm/cfengine.rpm && dnf clean all
