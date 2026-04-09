@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        from_rockylinux: [ "8", "9" ]
-        container_type: [ "plain", "ipa" ]
+        from_rockylinux: [ 8, 9 ]
+        container_type: [ plain, ipa ]
 
     steps:
       - uses: actions/checkout@v4
