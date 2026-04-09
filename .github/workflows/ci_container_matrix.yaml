@@ -32,5 +32,13 @@ jobs:
           mkdir -p "rpm/";
           wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/community_binaries/Community-${cfengine_version}/agent_rhel${{ matrix.from_rockylinux }}_x86_64/cfengine-community-${cfengine_version}-1.el${{ matrix.from_rockylinux }}.x86_64.rpm" --output-document "rpm/cfengine.rpm";
 
-      - name: Build container
-        run: docker build . --build-arg FROM_ROCKYLINUX "${{ matrix.from_rockylinux }}" -f "Dockerfile.${{ matrix.container_type }}"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      -
+        name: Build containers
+        uses: docker/build-push-action@v7
+        with:
+          push: false
+          file: "Dockerfile.${{ matrix.container_type }}"
+          build-args:
+            - FROM_ROCKYLINUX "${{ matrix.from_rockylinux }}"
