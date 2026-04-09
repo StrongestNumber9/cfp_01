@@ -1,17 +1,36 @@
-// Before publishing your new repository:
-// 1. Write the readme file
-// 2. Update the issues link in Contributing section in the readme file
-// 3. Update the discussion link in config.yml file in .github/ISSUE_TEMPLATE directory
+= CFP_01: Easy to use CFEngine containers
 
-= repo-template
-
-// Add a short description of your project. Tell what your project does and what it's used for.
-
-This is a template repository for Teragrep organization.
+Provides ready out-of-the-box containers with CFEngine already installed. Intended to be used with containerized tests that requires CFEngine.
 
 == Features
 
-// List your project's features
+Supported simple `plain` containers:
+
+[cols="1,1"]
+|===
+|Container name|Based on
+
+|`ghcr.io/teragrep/cfp_01/plain/el8:latest`
+|`rockylinux/rockylinux:8`
+
+|`ghcr.io/teragrep/cfp_01/plain/el9:latest`
+|`rockylinux/rockylinux:9`
+|===
+
+Supported `ipa` containers that extends link:https://github.com/teragrep/ipa_01[`ipa_01`].
+
+[cols="1,1"]
+|===
+|Container name|Based on
+
+|`ghcr.io/teragrep/cfp_01/ipa/el8:latest`
+|`ghcr.io/teragrep/ipa_01/client/el8:1.0.0`
+
+|`ghcr.io/teragrep/cfp_01/ipa/el9:latest`
+|`ghcr.io/teragrep/ipa_01/client/el9:1.0.0`
+|===
+
+The containers can be pinned to certain releases instead of `:latest`, for example with `:1.0.0`. Full list of versions can be found  in link:https://github.com/orgs/teragrep/packages?repo_name=cfp_01[packages list].
 
 == Documentation
 
@@ -19,17 +38,17 @@ See the official documentation on https://docs.teragrep.com[docs.teragrep.com].
 
 == Limitations
 
-// If your project has limitations, please list them. Otherwise remove this section.
+All bootstrapping and promise execution logic must be provided by the user.
 
-== How to [compile/use/implement]
+== How to use
 
-// add instructions how people can start to use your project
+The `plain` containers can be used as if they were like any other normal container.
+
+The `ipa` containers requires link:https://github.com/teragrep/ipa_01?tab=readme-ov-file#how-to-use[some setup].
 
 == Contributing
 
-// Change the repository name in the issues link to match with your project's name
-
-You can involve yourself with our project by https://github.com/teragrep/repo-template/issues/new/choose[opening an issue] or submitting a pull request.
+You can involve yourself with our project by https://github.com/teragrep/cfp_01/issues/new/choose[opening an issue] or submitting a pull request.
 
 Contribution requirements:
 
