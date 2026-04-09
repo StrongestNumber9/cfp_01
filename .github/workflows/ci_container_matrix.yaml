@@ -15,10 +15,6 @@ jobs:
         container_type: [ plain, ipa ]
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Cache CFEngine binary
         id: cache-binary
         uses: actions/cache@v5
