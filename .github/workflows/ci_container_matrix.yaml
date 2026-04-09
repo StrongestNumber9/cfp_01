@@ -31,9 +31,6 @@ jobs:
           mkdir -p "rpm/";
           wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/community_binaries/Community-${cfengine_version}/agent_rhel${{ matrix.from_rockylinux }}_x86_64/cfengine-community-${cfengine_version}-1.el${{ matrix.from_rockylinux }}.x86_64.rpm" --output-document "rpm/cfengine.rpm";
 
-      - name: debug
-        run: ls -laF; ls -laF rpm/;
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
@@ -45,3 +42,7 @@ jobs:
           file: "Dockerfile.${{ matrix.container_type }}"
           build-args: |
             FROM_ROCKYLINUX=${{ matrix.from_rockylinux }}
+          tags: ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}:latest
+
+      - name: Check CFEngine binary reports expected version
+        run: docker run -ti --name "ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}" "ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}:latest" /var/cfengine/bin/cf-agent --version
