@@ -50,4 +50,4 @@ jobs:
         run: docker image ls
 
       - name: Check CFEngine binary reports expected version
-        run: docker run --rm --name "ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}" "ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}:latest" --entrypoint /var/cfengine/bin/cf-agent --version
+        run: docker run --rm --name "ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}" --entrypoint /var/cfengine/bin/cf-agent "ci-${{ matrix.container_type }}-${{ matrix.from_rockylinux }}:latest" --version
