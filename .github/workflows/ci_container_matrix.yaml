@@ -41,4 +41,4 @@ jobs:
           push: false
           file: "Dockerfile.${{ matrix.container_type }}"
           build-args: |
-            FROM_ROCKYLINUX="${{ matrix.from_rockylinux }}"
+            FROM_ROCKYLINUX=${{ matrix.from_rockylinux }}
