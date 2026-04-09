@@ -3,7 +3,7 @@ name: CI
 on: [ push ]
 
 env:
-  cfengine_version: 3.21.3-1
+  cfengine_version: 3.21.3
 
 jobs:
   upload:
@@ -22,7 +22,7 @@ jobs:
       - name: Download CFEngine
         run: |
           mkdir -p "rpm/";
-          wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/pub/yum/x86_64/cfengine-community-${cfengine_version}.el${{ matrix.from_rockylinux }}.x86_64.rpm" --output-document "rpm/cfengine.rpm"
+          wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/community_binaries/Community-${cfengine_version}/agent_rhel${{ matrix.from_rockylinux }}_x86_64/cfengine-community-${cfengine_version}-1.el${{ matrix.from_rockylinux }}.x86_64.rpm" --output-document "rpm/cfengine.rpm"
 
       - name: Build container
         run: docker build . --build-arg FROM_ROCKYLINUX "${{ matrix.from_rockylinux }}" -f "Dockerfile.${{ matrix.container_type }}"
