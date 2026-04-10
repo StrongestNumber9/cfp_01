@@ -1,5 +1,7 @@
 ARG FROM_ROCKYLINUX
 FROM rockylinux/rockylinux:${FROM_ROCKYLINUX}
+# The first arg is consumed by FROM line and needs to be defined again
+ARG FROM_ROCKYLINUX
 RUN --mount=type=bind,source=./rpm/,target=/rpm/ dnf install --assumeyes "/rpm/cfengine.el${FROM_ROCKYLINUX}.rpm" systemd findutils && dnf clean all
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
 COPY files/cfp_01.service /etc/systemd/system/cfp_01.service

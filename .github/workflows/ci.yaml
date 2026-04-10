@@ -35,6 +35,7 @@ jobs:
 
       - name: Build images
         run: |
+          set -e;
           docker build . --tag systemd/el8:latest -f Dockerfile.systemd --build-arg FROM_ROCKYLINUX=8 &
           docker build . --tag systemd/el9:latest -f Dockerfile.systemd --build-arg FROM_ROCKYLINUX=9 &
           docker build . --tag systemd-ipa/el8:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=8 &
