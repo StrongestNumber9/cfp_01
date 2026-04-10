@@ -14,7 +14,7 @@ bundle agent report_status(from) {
   reports:
       "Hello from $(from)!";
   files:
-      "/results/$(sys.fqhost).$(from).result"
+      "/results/$(sys.uqhost).$(from).result"
         create => "true",
         edit_line => add_message("$(from) success");
 }
