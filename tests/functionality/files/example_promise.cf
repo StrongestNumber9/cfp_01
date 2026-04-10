@@ -16,11 +16,19 @@ bundle agent report_status(from) {
   files:
       "/return/$(sys.uqhost).$(from).return"
         create => "true",
-        edit_line => add_message("$(from) success");
+        edit_line => add_message("$(from) success"),
+        perms => set_perms;
 }
 
 bundle edit_line add_message(message) {
   insert_lines:
       "$(message)"
         insert_type => "literal";
+}
+
+body perms set_perms {
+        mode => "644";
+        owners => { "root" };
+        groups => { "root" };
+        rxdirs => "true";
 }
