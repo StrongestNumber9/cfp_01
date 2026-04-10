@@ -71,6 +71,8 @@ services:
       - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
       - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
       - ./files/ipa_prescript.sh:/ipa_01.conf.d/pre/ipa_prescript.sh
+    env_file:
+      - ipa_01.env
 
   # systemd-ipa-el9
   systemd-ipa-el9:
@@ -96,6 +98,8 @@ services:
       - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
       - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
       - ./files/ipa_prescript.sh:/ipa_01.conf.d/pre/ipa_prescript.sh
+    env_file:
+      - ipa_01.env
 
 networks:
   example.test:
