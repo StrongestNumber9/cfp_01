@@ -1,0 +1,69 @@
+name: CI
+
+on: [ push ]
+
+env:
+  CFENGINE_VERSION: 3.21.3
+
+jobs:
+  upload:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Cache CFEngine binary
+        id: cache-binary
+        uses: actions/cache@v5
+        with:
+          path: rpm/*.rpm
+          key: cache-binary
+
+      - name: Download CFEngine
+        if: steps.cache-binary.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "rpm/";
+          for from_rockylinux in 8 9; do
+            wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/community_binaries/Community-${CFENGINE_VERSION}/agent_rhel${from_rockylinux}_x86_64/cfengine-community-${CFENGINE_VERSION}-1.el${from_rockylinux}.x86_64.rpm" --output-document "rpm/cfengine.el${from_rockylinux}.rpm";
+          done;
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+        with:
+          driver: docker
+
+      - name: Build images
+        run: |
+          docker build . --tag systemd/el8:latest -f Dockerfile.systemd --build-arg FROM_ROCKYLINUX=8 &
+          docker build . --tag systemd/el9:latest -f Dockerfile.systemd --build-arg FROM_ROCKYLINUX=9 &
+          docker build . --tag systemd-ipa/el8:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=8 &
+          docker build . --tag systemd-ipa/el9:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=9 &
+          wait;
+
+      - name: Check CFEngine binary reports expected version
+        run: |
+          for type in systemd systemd-ipa; do
+            for from_rockylinux in 8 9; do
+              REPORTED_VERSION="$(docker run --rm --name --entrypoint /var/cfengine/bin/cf-agent "${type}/el${from_rockylinux}:latest" --version)";
+              echo "Detected version '${REPORTED_VERSION}' for '${type}/el${from_rockylinux}'";
+              if [ "${REPORTED_VERSION}" != "CFEngine Core ${CFENGINE_VERSION}" ]; then
+                echo "Detected version is not as expected, failing";
+                exit 1;
+              fi;
+            done;
+          done;
+
+      - name: Run container tests
+        timeout-minutes: 15
+        run:
+          cd "tests/functionality";
+          docker compose up --no-color;
+          for node in systemd-el8 systemd-el9 systemd-ipa-el8 systemd-ipa-el9; do
+            echo "Checking if cfp_01 entrypoint worked for '${node}'";
+            grep 'success' "${{ runner.temp }}/${node}.return";
+          done;
+          for node in systemd-ipa-el8 systemd-ipa-el9; do
+            echo "Checking if ipa_01 prescript worked for '${node}'";
+            grep 'success' "${{ runner.temp }}/${node}.ipa.return";
+          done;

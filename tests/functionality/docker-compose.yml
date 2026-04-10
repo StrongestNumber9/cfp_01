@@ -1,0 +1,110 @@
+services:
+  # systemd-el8
+  systemd-el8:
+    hostname: 'systemd-el8.example.test'
+    container_name: 'systemd-el8'
+    image: "systemd/el8:latest"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      example.test:
+        ipv4_address: 192.168.155.101
+        ipv6_address: fd12:4567:789a:1::101
+    privileged: true
+    tty: true
+    volumes:
+      - type: tmpfs
+        target: /run
+      - type: tmpfs
+        target: /var/run
+      - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
+      - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
+
+  # systemd-el9
+  systemd-el9:
+    hostname: 'systemd-el9.example.test'
+    container_name: 'systemd-el9'
+    image: "systemd/el9:latest"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      example.test:
+        ipv4_address: 192.168.155.102
+        ipv6_address: fd12:4567:789a:1::102
+    privileged: true
+    tty: true
+    volumes:
+      - type: tmpfs
+        target: /run
+      - type: tmpfs
+        target: /var/run
+      - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
+      - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
+
+  # systemd-ipa-el8
+  systemd-ipa-el8:
+    hostname: 'systemd-ipa-el8.example.test'
+    container_name: 'systemd-ipa-el8'
+    image: "systemd-ipa/el8:latest"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      example.test:
+        ipv4_address: 192.168.155.103
+        ipv6_address: fd12:4567:789a:1::103
+    privileged: true
+    tty: true
+    volumes:
+      - type: tmpfs
+        target: /run
+      - type: tmpfs
+        target: /var/run
+      - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
+      - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
+      - ./files/ipa_prescript.sh:/ipa_01.conf.d/pre/ipa_prescript.sh
+
+  # systemd-ipa-el9
+  systemd-ipa-el9:
+    hostname: 'systemd-ipa-el9.example.test'
+    container_name: 'systemd-ipa-el9'
+    image: "systemd-ipa/el9:latest"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      example.test:
+        ipv4_address: 192.168.155.104
+        ipv6_address: fd12:4567:789a:1::104
+    privileged: true
+    tty: true
+    volumes:
+      - type: tmpfs
+        target: /run
+      - type: tmpfs
+        target: /var/run
+      - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
+      - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
+      - ./files/ipa_prescript.sh:/ipa_01.conf.d/pre/ipa_prescript.sh
+
+networks:
+  example.test:
+    name: example.test
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+       - subnet: 192.168.155.0/24
+         gateway: 192.168.155.1
+       - subnet: fd12:4567:789a:1::/64
+         gateway: fd12:4567:789a:1::1
