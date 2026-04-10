@@ -1,4 +1,4 @@
 #!/bin/bash
 # This file is just to override /ipa_01.entrypoint.sh as we do not use full ipa here.
-echo "ipa_01 success" | tee "/return/$(hostname -s).ipa.return";
+cf-agent -KIf /example_promise.cf -b ipa_01_entrypoint;
 exit 0;

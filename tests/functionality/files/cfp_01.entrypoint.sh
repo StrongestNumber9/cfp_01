@@ -1,4 +1,4 @@
 #!/bin/bash
-echo "cfp_01 success" | tee "/return/$(hostname -s).return";
+cf-agent -KIf /example_promise.cf -b cfp_01_entrypoint;
 echo "Powering off!";
 systemctl start poweroff.target;

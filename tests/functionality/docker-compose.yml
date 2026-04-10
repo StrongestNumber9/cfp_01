@@ -22,6 +22,7 @@ services:
         target: /var/run
       - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
       - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
+      - ./files/example_promise.cf:/example_promise.cf
 
   # systemd-el9
   systemd-el9:
@@ -46,6 +47,7 @@ services:
         target: /var/run
       - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
       - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
+      - ./files/example_promise.cf:/example_promise.cf
 
   # systemd-ipa-el8
   systemd-ipa-el8:
@@ -71,6 +73,7 @@ services:
       - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
       - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
       - ./files/ipa_01.entrypoint-override.sh:/ipa_01.entrypoint.sh
+      - ./files/example_promise.cf:/example_promise.cf
 
   # systemd-ipa-el9
   systemd-ipa-el9:
@@ -96,6 +99,7 @@ services:
       - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
       - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
       - ./files/ipa_01.entrypoint-override.sh:/ipa_01.entrypoint.sh
+      - ./files/example_promise.cf:/example_promise.cf
 
 networks:
   example.test:

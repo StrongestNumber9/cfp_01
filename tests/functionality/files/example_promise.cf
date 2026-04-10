@@ -1,0 +1,20 @@
+# Entrypoints
+bundle agent cfp_01_entrypoint {
+  methods:
+      "any" usebundle => report_status("cfp_01");
+}
+
+bundle agent ipa_01_entrypoint {
+  methods:
+      "any" usebundle => report_status("ipa_01");
+}
+
+# Common bundle
+bundle agent report_status(from) {
+  reports:
+      "Hello from $(from)!";
+  files:
+      "/results/$(sys.fqhost).$(from).result"
+        create => "true",
+        edit_line => append_if_no_line("$(from) success");
+}

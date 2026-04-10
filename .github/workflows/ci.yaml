@@ -62,9 +62,9 @@ jobs:
           docker compose up --no-color;
           for node in systemd-el8 systemd-el9 systemd-ipa-el8 systemd-ipa-el9; do
             echo "Checking if cfp_01 entrypoint was executed for '${node}'";
-            grep 'cfp_01 success' "${{ runner.temp }}/${node}.return";
+            grep 'cfp_01 success' "${{ runner.temp }}/${node}.cfp_01.return";
           done;
           for node in systemd-ipa-el8 systemd-ipa-el9; do
             echo "Checking if ipa_01 entrypoint was executed for '${node}'";
-            grep 'ipa_01 success' "${{ runner.temp }}/${node}.ipa.return";
+            grep 'ipa_01 success' "${{ runner.temp }}/${node}.ipa_01.return";
           done;
