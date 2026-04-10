@@ -60,7 +60,7 @@ jobs:
         run:
           cd "tests/functionality";
           docker compose up --no-color;
-          find "${{ runner.temp }}"; # DEBUG
+          find "${{ runner.temp }}";
           for node in systemd-el8 systemd-el9 systemd-ipa-el8 systemd-ipa-el9; do
             echo "Checking if cfp_01 entrypoint worked for '${node}'";
             grep 'cfp_01 success' "${{ runner.temp }}/${node}.return";
