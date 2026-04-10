@@ -6,4 +6,4 @@ RUN --mount=type=bind,source=./rpm/,target=/rpm/ dnf install --assumeyes "/rpm/c
 COPY files/cfp_01-systemd-ipa.service /etc/systemd/system/cfp_01.service
 # DEBUG
 RUN sed 's,oneshot,oneshot\nRemainAfterExit=yes,g' /etc/systemd/system/ipa_01.service
-RUN systemctl daemon-reload
+
