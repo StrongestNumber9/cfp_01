@@ -43,10 +43,11 @@ jobs:
 
       - name: Check CFEngine binary reports expected version
         run: |
-          for type in systemd systemd-ipa; do
+          set -x;
+          for container_type in systemd systemd-ipa; do
             for from_rockylinux in 8 9; do
-              REPORTED_VERSION="$(docker run --rm --name --entrypoint /var/cfengine/bin/cf-agent "${type}/el${from_rockylinux}:latest" --version)";
-              echo "Detected version '${REPORTED_VERSION}' for '${type}/el${from_rockylinux}'";
+              REPORTED_VERSION="$(docker run --rm --name --entrypoint /var/cfengine/bin/cf-agent "${container_type}/el${from_rockylinux}:latest" --version)";
+              echo "Detected version '${REPORTED_VERSION}' for '${container_type}/el${from_rockylinux}'";
               if [ "${REPORTED_VERSION}" != "CFEngine Core ${CFENGINE_VERSION}" ]; then
                 echo "Detected version is not as expected, failing";
                 exit 1;
