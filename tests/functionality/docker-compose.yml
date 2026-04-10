@@ -70,9 +70,7 @@ services:
         target: /var/run
       - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
       - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
-      - ./files/ipa_prescript.sh:/ipa_01.conf.d/pre/ipa_prescript.sh
-    env_file:
-      - ipa_01.env
+      - ./files/ipa_01.entrypoint-override.sh:/ipa_01.entrypoint.sh
 
   # systemd-ipa-el9
   systemd-ipa-el9:
@@ -97,9 +95,7 @@ services:
         target: /var/run
       - ${RUNNER_TEMP:-/tmp/cfp_01_tmp/}:/return/
       - ./files/cfp_01.entrypoint.sh:/cfp_01.entrypoint.sh
-      - ./files/ipa_prescript.sh:/ipa_01.conf.d/pre/ipa_prescript.sh
-    env_file:
-      - ipa_01.env
+      - ./files/ipa_01.entrypoint-override.sh:/ipa_01.entrypoint.sh
 
 networks:
   example.test:

@@ -1,4 +1,4 @@
 #!/bin/bash
 echo "success" | tee "/return/$(hostname -s).return";
 echo "Powering off!";
-systemctl start poweroff.target;
+( sleep 5; systemctl start poweroff.target; ) &
