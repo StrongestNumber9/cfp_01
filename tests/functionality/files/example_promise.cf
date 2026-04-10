@@ -16,5 +16,11 @@ bundle agent report_status(from) {
   files:
       "/results/$(sys.fqhost).$(from).result"
         create => "true",
-        edit_line => append_if_no_line("$(from) success");
+        edit_line => add_message("$(from) success");
+}
+
+bundle edit_line add_message(message) {
+  insert_lines:
+      "$(message)"
+        insert_type => "literal";
 }
