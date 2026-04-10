@@ -1,32 +1,38 @@
 = CFP_01: Easy to use CFEngine containers
 
-Provides ready out-of-the-box containers with CFEngine already installed. Intended to be used with containerized tests that requires CFEngine.
+Provides easy to use, systemd-based containers with CFEngine already installed. Intended to be used with containerized tests that requires CFEngine.
 
 == Features
 
-Supported simple `plain` containers:
+Easy to run and extend.
+
+Custom entrypoint logic can be inserted and automatically executed without having to worry about creating systemd service files.
+
+Builds both plain `systemd` and link:https://github.com/teragrep/ipa_01[`systemd-ipa`] containers.
+
+Supported plain `systemd` containers:
 
 [cols="1,1"]
 |===
 |Container name|Based on
 
-|`ghcr.io/teragrep/cfp_01/plain/el8:latest`
+|`ghcr.io/teragrep/cfp_01/systemd/el8:latest`
 |`rockylinux/rockylinux:8`
 
-|`ghcr.io/teragrep/cfp_01/plain/el9:latest`
+|`ghcr.io/teragrep/cfp_01/systemd/el9:latest`
 |`rockylinux/rockylinux:9`
 |===
 
-Supported `ipa` containers that extends link:https://github.com/teragrep/ipa_01[`ipa_01`].
+Supported `systemd-ipa` containers that extends link:https://github.com/teragrep/ipa_01[`ipa_01`]:
 
 [cols="1,1"]
 |===
 |Container name|Based on
 
-|`ghcr.io/teragrep/cfp_01/ipa/el8:latest`
+|`ghcr.io/teragrep/cfp_01/systemd-ipa/el8:latest`
 |`ghcr.io/teragrep/ipa_01/client/el8:1.0.0`
 
-|`ghcr.io/teragrep/cfp_01/ipa/el9:latest`
+|`ghcr.io/teragrep/cfp_01/systemd-ipa/el9:latest`
 |`ghcr.io/teragrep/ipa_01/client/el9:1.0.0`
 |===
 
@@ -42,9 +48,11 @@ All bootstrapping and promise execution logic must be provided by the user.
 
 == How to use
 
-The `plain` containers can be used as if they were like any other normal container.
+See link:tests/functionality/[`tests/functionality`] for example use.
 
-The `ipa` containers requires link:https://github.com/teragrep/ipa_01?tab=readme-ov-file#how-to-use[some setup].
+You can provide `/cfp_01.entrypoint.sh` for the service `cfp_01` to execute on startup if any custom bootstrapping logic is wanted.
+
+The `systemd-ipa` containers requires link:https://github.com/teragrep/ipa_01?tab=readme-ov-file#how-to-use[some setup] and `ipa_01` service to be fully finished before service `cfp_01` is executed.
 
 == Contributing
 
