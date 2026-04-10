@@ -3,5 +3,6 @@ FROM ghcr.io/teragrep/ipa_01/client/el${FROM_ROCKYLINUX}:1.0.0
 # The first arg is consumed by FROM line and needs to be defined again
 ARG FROM_ROCKYLINUX
 RUN --mount=type=bind,source=./rpm/,target=/rpm/ dnf install --assumeyes "/rpm/cfengine.el${FROM_ROCKYLINUX}.rpm" && dnf clean all
+ENV PATH=$PATH:/var/cfengine/bin
 COPY files/cfp_01-systemd-ipa.service /etc/systemd/system/cfp_01.service
 RUN systemctl enable cfp_01
