@@ -17,6 +17,9 @@ jobs:
       attestations: write
       id-token: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Cache CFEngine binary
         id: cache-binary
         uses: actions/cache@v5
