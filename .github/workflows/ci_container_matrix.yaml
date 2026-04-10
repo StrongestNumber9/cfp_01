@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         from_rockylinux: [ 8, 9 ]
-        container_type: [ plain, ipa ]
+        container_type: [ systemd, systemd-ipa ]
 
     steps:
       - name: Checkout

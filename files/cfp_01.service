@@ -1,0 +1,12 @@
+[Unit]
+Description=cfp_01 entrypoint
+ConditionPathExists=/cfp_01.entrypoint.sh
+
+[Service]
+Type=oneshot
+ExecStart=bash -e /cfp_01.entrypoint.sh
+StandardInput=tty
+StandardOutput=tty
+
+[Install]
+WantedBy=multi-user.target

@@ -1,3 +1,0 @@
-ARG FROM_ROCKYLINUX
-FROM rockylinux/rockylinux:${FROM_ROCKYLINUX}
-RUN --mount=type=bind,source=./rpm/,target=/rpm/ dnf install --assumeyes /rpm/cfengine.rpm && dnf clean all
