@@ -16,7 +16,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
-    strategy:
+    steps:
       - name: Cache CFEngine binary
         id: cache-binary
         uses: actions/cache@v5
