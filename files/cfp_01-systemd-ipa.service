@@ -1,8 +1,6 @@
 [Unit]
 Description=cfp_01 entrypoint
 ConditionPathExists=/cfp_01.entrypoint.sh
-# Run and execute ipa_01 first if it exists. No-op otherwise.
-Wants=ipa_01.service
 After=ipa_01.service
 
 [Service]
