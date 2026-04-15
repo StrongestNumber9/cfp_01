@@ -6,7 +6,14 @@ bundle agent cfp_01_entrypoint {
 
 bundle agent ipa_01_entrypoint {
   methods:
-      "any" usebundle => report_status("ipa_01");
+      "any" usebundle => report_status("ipa_01"),
+        if => not(fileexists("/return/$(sys.uqhost).cfp_01.return"));
+  reports:
+      "FAIL: cfp_01 service was triggered before ipa_01, failing"
+        if => and(
+                   fileexists("/return/$(sys.uqhost).cfp_01.return"),
+                   not(fileexists("/return/$(sys.uqhost).ipa_01.return"))
+        );
 }
 
 # Common bundle
