@@ -1,6 +1,7 @@
 [Unit]
 Description=cfp_01 entrypoint
 ConditionPathExists=/cfp_01.entrypoint.sh
+Wants=ipa_01.service
 After=ipa_01.service
 
 [Service]
