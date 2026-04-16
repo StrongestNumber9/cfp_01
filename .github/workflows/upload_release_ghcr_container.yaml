@@ -52,8 +52,10 @@ jobs:
           podman build --tag ghcr.io/${{ env.REPO_LC }}/systemd-ipa/el8:${{ github.event.release.tag_name }} --tag ghcr.io/${{ env.REPO_LC }}/systemd-ipa/el8:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=8 . &
           podman build --tag ghcr.io/${{ env.REPO_LC }}/systemd-ipa/el9:${{ github.event.release.tag_name }} --tag ghcr.io/${{ env.REPO_LC }}/systemd-ipa/el9:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=9 . &
           wait;
-          podman push ghcr.io/${{ env.REPO_LC }}/systemd/el8 --all-tags &
-          podman push ghcr.io/${{ env.REPO_LC }}/systemd/el9 --all-tags &
-          podman push ghcr.io/${{ env.REPO_LC }}/systemd-ipa/el8 --all-tags &
-          podman push ghcr.io/${{ env.REPO_LC }}/systemd-ipa/el9 --all-tags &
+          for tag in ${{ github.event.release.tag_name }} latest; do
+            podman push "ghcr.io/${{ env.REPO_LC }}/systemd/el8:${tag}" &
+            podman push "ghcr.io/${{ env.REPO_LC }}/systemd/el9:${tag}" &
+            podman push "ghcr.io/${{ env.REPO_LC }}/systemd-ipa/el8:${tag}" &
+            podman push "ghcr.io/${{ env.REPO_LC }}/systemd-ipa/el9:${tag}" &
+          done;
           wait;
