@@ -28,25 +28,20 @@ jobs:
             wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/community_binaries/Community-${CFENGINE_VERSION}/agent_rhel${from_rockylinux}_x86_64/cfengine-community-${CFENGINE_VERSION}-1.el${from_rockylinux}.x86_64.rpm" --output-document "rpm/cfengine.el${from_rockylinux}.rpm";
           done;
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-        with:
-          driver: docker
-
       - name: Build images
         run: |
           set -e;
-          docker build . --tag systemd/el8:latest -f Dockerfile.systemd --build-arg FROM_ROCKYLINUX=8 &
-          docker build . --tag systemd/el9:latest -f Dockerfile.systemd --build-arg FROM_ROCKYLINUX=9 &
-          docker build . --tag systemd-ipa/el8:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=8 &
-          docker build . --tag systemd-ipa/el9:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=9 &
+          podman build . --tag systemd/el8:latest -f Dockerfile.systemd --build-arg FROM_ROCKYLINUX=8 &
+          podman build . --tag systemd/el9:latest -f Dockerfile.systemd --build-arg FROM_ROCKYLINUX=9 &
+          podman build . --tag systemd-ipa/el8:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=8 &
+          podman build . --tag systemd-ipa/el9:latest -f Dockerfile.systemd-ipa --build-arg FROM_ROCKYLINUX=9 &
           wait;
 
       - name: Check CFEngine binary reports expected version
         run: |
           for container_type in systemd systemd-ipa; do
             for from_rockylinux in 8 9; do
-              REPORTED_VERSION="$(docker run --rm --entrypoint /var/cfengine/bin/cf-agent "${container_type}/el${from_rockylinux}:latest" --version)";
+              REPORTED_VERSION="$(podman run --rm --entrypoint /var/cfengine/bin/cf-agent "${container_type}/el${from_rockylinux}:latest" --version)";
               echo "Detected version '${REPORTED_VERSION}' for '${container_type}/el${from_rockylinux}'";
               if [ "${REPORTED_VERSION}" != "CFEngine Core ${CFENGINE_VERSION}" ]; then
                 echo "Detected version is not as expected, failing";
@@ -59,7 +54,7 @@ jobs:
         timeout-minutes: 5
         run:
           cd "tests/functionality";
-          docker compose up --no-color;
+          podman compose up --no-color;
           for node in systemd-el8 systemd-el9 systemd-ipa-el8 systemd-ipa-el9; do
             echo "Checking if cfp_01 entrypoint was executed for '${node}'";
             grep 'cfp_01 success' "${{ runner.temp }}/${node}.cfp_01.return";
