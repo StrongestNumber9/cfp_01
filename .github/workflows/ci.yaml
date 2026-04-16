@@ -28,6 +28,9 @@ jobs:
             wget --quiet "https://cfengine-package-repos.s3.amazonaws.com/community_binaries/Community-${CFENGINE_VERSION}/agent_rhel${from_rockylinux}_x86_64/cfengine-community-${CFENGINE_VERSION}-1.el${from_rockylinux}.x86_64.rpm" --output-document "rpm/cfengine.el${from_rockylinux}.rpm";
           done;
 
+      - name: enable podman
+        run: systemctl --user start podman.socket
+
       - name: Build images
         run: |
           set -e;
