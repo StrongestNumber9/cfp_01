@@ -1,0 +1,41 @@
+# Entrypoints
+bundle agent cfp_01_entrypoint {
+  methods:
+      "any" usebundle => report_status("cfp_01");
+}
+
+bundle agent ipa_01_entrypoint {
+  methods:
+      "any" usebundle => report_status("ipa_01"),
+        if => not(fileexists("/return/$(sys.uqhost).cfp_01.return"));
+  reports:
+      "FAIL: cfp_01 service was triggered before ipa_01, failing"
+        if => and(
+                   fileexists("/return/$(sys.uqhost).cfp_01.return"),
+                   not(fileexists("/return/$(sys.uqhost).ipa_01.return"))
+        );
+}
+
+# Common bundle
+bundle agent report_status(from) {
+  reports:
+      "Hello from $(from)!";
+  files:
+      "/return/$(sys.uqhost).$(from).return"
+        create => "true",
+        edit_line => add_message("$(from) success"),
+        perms => set_perms;
+}
+
+bundle edit_line add_message(message) {
+  insert_lines:
+      "$(message)"
+        insert_type => "literal";
+}
+
+body perms set_perms {
+        mode => "644";
+        owners => { "root" };
+        groups => { "root" };
+        rxdirs => "true";
+}
